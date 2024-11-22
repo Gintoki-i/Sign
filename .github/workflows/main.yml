@@ -2,10 +2,8 @@ name: test
 
 on:
   schedule:
-    # 北京时间 8:00（对应 UTC 时间 0:00）
-    - cron: "0 0 * * *"
-    # 北京时间 18:00（对应 UTC 时间 10:00）
-    - cron: "0 10 * * *"
+    - cron: "0 8 * * *"
+    - cron: "0 18 * * *"
   workflow_dispatch:  # 手动触发支持
 
 jobs:
@@ -26,19 +24,22 @@ jobs:
 
       - name: Save JSON Secret to file
         run: |
-          echo "$ZXS_JSON" > config.json
+          echo "$CONFIG_JSON" > config.json
         env:
-          ZXS_JSON: ${{ secrets.ZXS_JSON }}
+          CONFIG_JSON: ${{ secrets.CONFIG_JSON }}
 
       - name: Check if config.json exists and show contents
         run: |
-          # 查看 config.json 是否存在
           if [ -f config.json ]; then
             echo "config.json 文件存在，内容如下:"
             cat config.json
           else
             echo "config.json 文件不存在"
           fi
+
+      - name: Debug CONFIG_JSON secret
+        run: |
+          echo "Debugging CONFIG_JSON secret: $CONFIG_JSON"
 
       - name: Run Auto Check-In
         env:
