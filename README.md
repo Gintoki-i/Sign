@@ -2,6 +2,16 @@
 
 **Fork下来部署到Github Actions以便自动完成签到** 
 
+在 GitHub 仓库中添加 Secrets
+进入 GitHub 仓库页面。
+点击 Settings（设置）。
+在左侧菜单中找到 Secrets and variables > Actions，然后点击 Secrets。
+点击 New repository secret，进入添加界面。
+设置：
+Name（名称）：给 Secret 一个名称，例如 CONFIG_JSON。
+Value（值）：将步骤 1 中的 JSON 字符串粘贴到这里。
+点击 Add secret 保存。
+
 
 # AutoMoGuDingCheckIn
 
