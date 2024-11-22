@@ -24,7 +24,7 @@ jobs:
 
       - name: Save JSON Secret to file
         run: |
-          echo "$CONFIG_JSON" > ../../user/config.json
+          echo "$CONFIG_JSON" > user/config.json
         env:
           CONFIG_JSON: ${{ secrets.CONFIG_JSON }}
 
