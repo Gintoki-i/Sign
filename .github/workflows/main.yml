@@ -2,12 +2,17 @@ name: AutoMoGuDingCheckIn
 
 on:
   schedule:
-    - cron: "0 8 * * *" # 每天 8 点运行
-    - cron: "0 18 * * *" # 每天 18 点运行
+    # 北京时间 8:00（对应 UTC 时间 0:00）
+    - cron: "0 0 * * *"
+    # 北京时间 18:00（对应 UTC 时间 10:00）
+    - cron: "0 10 * * *"
+    # 当前时间下一分钟（以北京时间 14:28 为例，转换为 UTC 6:29）
+    - cron: "55 4 * * *"
 
 jobs:
   run:
     runs-on: ubuntu-latest
+
     steps:
       - name: Checkout code
         uses: actions/checkout@v3
