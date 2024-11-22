@@ -26,9 +26,9 @@ jobs:
 
       - name: Save JSON Secret to file
         run: |
-          echo "$CONFIG_JSON" > config.json
+          echo "$ZXS_JSON" > config.json
         env:
-          CONFIG_JSON: ${{ secrets.CONFIG_JSON }}
+          ZXS_JSON: ${{ secrets.ZXS_JSON }}
 
       - name: Check if config.json exists and show contents
         run: |
