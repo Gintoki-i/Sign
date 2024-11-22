@@ -27,9 +27,18 @@ jobs:
       - name: Save JSON Secret to file
         run: |
           echo "$CONFIG_JSON" > config.json
-          cat config.json
         env:
           CONFIG_JSON: ${{ secrets.CONFIG_JSON }}
+
+      - name: Check if config.json exists and show contents
+        run: |
+          # 查看 config.json 是否存在
+          if [ -f config.json ]; then
+            echo "config.json 文件存在，内容如下:"
+            cat config.json
+          else
+            echo "config.json 文件不存在"
+          fi
 
       - name: Run Auto Check-In
         env:
