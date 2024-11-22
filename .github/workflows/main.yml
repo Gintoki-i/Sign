@@ -1,4 +1,4 @@
-name: AutoMoGuDingCheckIn
+name: test
 
 on:
   schedule:
@@ -7,7 +7,7 @@ on:
     # 北京时间 18:00（对应 UTC 时间 10:00）
     - cron: "0 10 * * *"
     # 当前时间下一分钟（以北京时间 14:28 为例，转换为 UTC 6:29）
-    - cron: "55 4 * * *"
+    - cron: "51 4 * * *"
 
 jobs:
   run:
