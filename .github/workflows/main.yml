@@ -1,0 +1,28 @@
+name: AutoMoGuDingCheckIn
+
+on:
+  schedule:
+    - cron: "0 8 * * *" # 每天 8 点运行
+    - cron: "0 18 * * *" # 每天 18 点运行
+
+jobs:
+  run:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: 3.8
+
+      - name: Install dependencies
+        run: |
+          pip install -r requirements.txt
+
+      - name: Run Auto Check-In
+        env:
+          USERNAME: ${{ secrets.MOGUDING_USERNAME }}
+          PASSWORD: ${{ secrets.MOGUDING_PASSWORD }}
+        run: python main.py
