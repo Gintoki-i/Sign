@@ -2,9 +2,7 @@ name: test
 
 on:
   schedule:
-    # 北京时间 8:00（对应 UTC 时间 0:00）
     - cron: "0 8 * * *"
-    # 北京时间 18:00（对应 UTC 时间 10:00）
     - cron: "0 18 * * *"
   workflow_dispatch:  # 手动触发支持
 
@@ -22,8 +20,26 @@ jobs:
           python-version: 3.9
 
       - name: Install dependencies
+        run: pip install -r requirements.txt
+
+      - name: Save JSON Secret to file
         run: |
-          pip install -r requirements.txt
+          echo "$CONFIG_JSON" > ../../user/config.json
+        env:
+          CONFIG_JSON: ${{ secrets.CONFIG_JSON }}
+
+      - name: Check if config.json exists and show contents
+        run: |
+          if [ -f config.json ]; then
+            echo "config.json 文件存在，内容如下:"
+            cat config.json
+          else
+            echo "config.json 文件不存在"
+          fi
+
+      - name: Debug CONFIG_JSON secret
+        run: |
+          echo "Debugging CONFIG_JSON secret: $CONFIG_JSON"
 
       - name: Run Auto Check-In
         env:
