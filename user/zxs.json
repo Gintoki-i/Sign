@@ -1,0 +1,76 @@
+{
+  "config": {
+    "user": {
+      "phone": "19104948584",
+      "password": "231225Zxs"
+    },
+    "clockIn": {
+      "location": {
+        "address": "广东省 · 东莞市 · 松山湖园区 · 湃泊科技有限公司",
+        "latitude": "113.8680",
+        "longitude": "22.8996",
+        "province": "广东省",
+        "city": "东莞市",
+        "area": "松山湖区"
+      },
+      "imageCount": 0,
+      "description": []
+    },
+    "reportSettings": {
+      "daily": {
+        "enabled": false,
+        "imageCount": 0
+      },
+      "weekly": {
+        "enabled": true,
+        "imageCount": 0,
+        "submitTime": 4
+      },
+      "monthly": {
+        "enabled": false,
+        "imageCount": 0,
+        "submitTime": 29
+      }
+    },
+    "ai": {
+      "model": "gpt-4o-mini",
+      "apikey": "sk-osdhgosdipghpsdgjiosfvinoips",
+      "apiUrl": "https://api.openai.com/"
+    },
+    "pushNotifications": [
+      {
+        "type": "Server",
+        "enabled": true,
+        "sendKey": "your_key"
+      },
+      {
+        "type": "PushPlus",
+        "enabled": true,
+        "token": "your_token"
+      },
+      {
+        "type": "AnPush",
+        "enabled": true,
+        "token": "your_token",
+        "channel": "通道ID,多个用英文逗号隔开",
+        "to": "根据官方文档获取"
+      },
+      {
+        "type": "WxPusher",
+        "enabled": true,
+        "spt": "your_spt"
+      },
+      {
+        "type": "SMTP",
+        "enabled": true,
+        "host": "smtp服务地址",
+        "port": 465,
+        "username": "发件人邮箱",
+        "password": "smtp密码",
+        "from": "发件人名称",
+        "to": "收件人邮箱"
+      }
+    ],
+    "device": "{brand: Redmi 22127RK46C, systemVersion: 14, Platform: Android, isPhysicalDevice: true, incremental: V816.0.13.0.UMKCNXM}"
+  }
+}
