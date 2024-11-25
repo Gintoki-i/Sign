@@ -22,19 +22,12 @@ jobs:
       - name: 安装依赖
         run: pip install -r requirements.txt
 
-      - name: 调试 CONFIG_JSON Secret
-        env:
-          CONFIG_JSON: ${{ secrets.CONFIG_JSON }}
-        run: |
-          echo "调试 CONFIG_JSON 内容："
-          echo "${CONFIG_JSON}"
-
       - name: 保存 CONFIG_JSON 到文件
         env:
           CONFIG_JSON: ${{ secrets.CONFIG_JSON }}
         run: |
           mkdir -p user
-          echo "${CONFIG_JSON}" > user/config.json
+          echo "${CONFIG_JSON}" | jq '.' > user/config.json
           echo "config.json 写入完成，内容如下："
           cat user/config.json
 
