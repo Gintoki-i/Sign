@@ -14,7 +14,15 @@ jobs:
       - name: 检出代码
         uses: actions/checkout@v3
 
-      - name: 创建 user 目录并写入 Secrets 测试
+      - name: 设置 Python 环境
+        uses: actions/setup-python@v4
+        with:
+          python-version: 3.9
+          
+      - name: 安装依赖
+        run: pip install -r requirements.txt
+
+      - name: 创建 user 目录并写入 Secrets 
         env:
           TEST_SECRET: ${{ secrets.CONFIG_JSON }}
         run: |
