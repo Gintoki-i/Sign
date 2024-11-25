@@ -424,11 +424,11 @@ def run(config: ConfigManager) -> None:
     """
     results: List[Dict[str, Any]] = []
 
-    try:
-        pusher = MessagePusher(config.get_value('config.pushNotifications'))
-    except Exception as e:
-        logger.error(f"获取消息推送客户端失败: {str(e)}")
-        return
+    # try:
+    #     pusher = MessagePusher(config.get_value('config.pushNotifications'))
+    # except Exception as e:
+    #     logger.error(f"获取消息推送客户端失败: {str(e)}")
+    #     return
 
     try:
         api_client = get_api_client(config)
