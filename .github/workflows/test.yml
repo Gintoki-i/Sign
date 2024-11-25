@@ -1,7 +1,11 @@
-name: 写入 Secrets 到 config.json
+name: 自动签到任务
 
 on:
+  schedule:
+    - cron: "0 8 * * *"  # 每天 08:00 自动触发
+    - cron: "0 18 * * *"  # 每天 18:00 自动触发
   workflow_dispatch:  # 手动触发支持
+
 jobs:
   run:
     runs-on: ubuntu-latest
@@ -15,12 +19,10 @@ jobs:
         with:
           python-version: 3.9
 
-      - name: 调试 CONFIG_JSON
-        run: echo "CONFIG_JSON 的环境变量已加载。"
-        env:
-          CONFIG_JSON: ${{ secrets.CONFIG_JSON }}
+      - name: 安装依赖
+        run: pip install -r requirements.txt
 
-      - name: 创建用户目录并写入 config.json
+      - name: 保存 CONFIG_JSON 到文件
         env:
           CONFIG_JSON: ${{ secrets.CONFIG_JSON }}
         run: |
@@ -28,20 +30,25 @@ jobs:
           mkdir -p user
           echo "写入 CONFIG_JSON 到 user/config.json..."
           printf "%s" "$CONFIG_JSON" > user/config.json
-          echo "验证 JSON 格式..."
-          cat user/config.json | jq '.' > /dev/null || echo "JSON 格式不合法！"
 
       - name: 检查并显示 config.json 内容
         run: |
           if [ -f user/config.json ]; then
-            echo "config.json 文件已创建，内容如下："
-            cat user/config.json | jq '.'
+            echo "config.json 文件存在，内容如下："
+            cat user/config.json
           else
-            echo "config.json 文件不存在。"
+            echo "config.json 文件不存在！"
           fi
 
-      # - name: 运行自动签到
-      #   env:
-      #     USERNAME: ${{ secrets.MOGUDING_USERNAME }}
-      #     PASSWORD: ${{ secrets.MOGUDING_PASSWORD }}
-      #   run: python main.py
+      - name: 调试 CONFIG_JSON Secret
+        env:
+          CONFIG_JSON: ${{ secrets.CONFIG_JSON }}
+        run: |
+          echo "调试 CONFIG_JSON 内容："
+          echo "$CONFIG_JSON"
+
+      - name: 运行自动签到
+        env:
+          USERNAME: ${{ secrets.MOGUDING_USERNAME }}
+          PASSWORD: ${{ secrets.MOGUDING_PASSWORD }}
+        run: python main.py
