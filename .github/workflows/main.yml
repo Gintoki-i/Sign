@@ -1,4 +1,5 @@
-name: test
+name: 测试写入 Secrets 到文件并验证 JSON 格式
+
 on:
   workflow_dispatch:
   schedule:
@@ -10,23 +11,27 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
+      # 检出代码
       - name: 检出代码
         uses: actions/checkout@v3
 
+      # 设置 Python 环境
       - name: 设置 Python 环境
         uses: actions/setup-python@v4
         with:
           python-version: 3.9
           
+      # 安装依赖
       - name: 安装依赖
         run: pip install -r requirements.txt
 
+      # 输出 Secrets 内容进行调试
       - name: 输出 Secrets 内容进行调试
         run: |
           echo "Secrets 内容如下："
-          echo "${{ secrets.CONFIG_JSON }}" || echo "Secrets 内容为空！"
+          echo "$TEST_SECRET" | head -n 10  # 打印前10行，以调试 Secrets 是否完整
 
-
+      # 写入 Secrets 到 config.json
       - name: 写入 Secrets 到 config.json
         env:
           TEST_SECRET: ${{ secrets.CONFIG_JSON }}
@@ -35,6 +40,7 @@ jobs:
           echo "$TEST_SECRET" > user/config.json
           echo "写入完成。"
 
+      # 验证文件是否正确写入
       - name: 验证文件是否正确写入
         run: |
           if [ -s user/config.json ]; then
@@ -44,16 +50,19 @@ jobs:
             exit 1
           fi
 
+      # 验证 config.json 内容
       - name: 验证 config.json 内容
         run: |
           echo "config.json 文件内容如下："
           cat -A user/config.json || echo "文件不存在或内容为空！"
           echo "字符总数为：$(wc -c < user/config.json)"
 
+      # 安装 jq 工具
       - name: 安装 jq 工具
         run: |
           sudo apt-get update && sudo apt-get install -y jq
 
+      # 验证 JSON 格式
       - name: 验证 JSON 格式
         run: |
           if jq empty user/config.json; then
@@ -62,18 +71,12 @@ jobs:
             echo "Secrets 文件的 JSON 格式无效！"
           fi
 
-      - name: 验证文件大小
-        run: |
-          if [ -s user/config.json ]; then
-            echo "Secrets 文件已写入，大小为：$(stat -c%s user/config.json) 字节"
-          else
-            echo "Secrets 文件为空或未正确写入！"
-          fi
-
+      # 查看文件内容
       - name: 查看文件内容
         run: |
           echo "config.json 文件内容如下："
           cat user/config.json || echo "文件不存在或内容为空！"
 
+      # 执行签到脚本
       - name: 执行签到脚本
         run: python main.py
