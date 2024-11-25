@@ -25,11 +25,18 @@ jobs:
       - name: 安装依赖
         run: pip install -r requirements.txt
 
+      # 输出 Secrets 内容进行调试
+      - name: 输出 Secrets 内容进行调试
+        run: |
+          echo "Secrets 内容如下："
+          echo "$CONFIG_JSON_1" 
+          echo "$CONFIG_JSON_2" 
+
       # 写入多个 Secrets 到不同的 JSON 文件
       - name: 写入 Secrets 到 JSON 文件
         env:
-          CONFIG_JSON_1: ${{ secrets.QHG_JSON }}
-          CONFIG_JSON_2: ${{ secrets.ZXS_JSON }}
+          CONFIG_JSON_1: ${{ secrets.ZXS_JSON }}
+          CONFIG_JSON_2: ${{ secrets.QHG_JSON }}
         run: |
           mkdir -p user
           echo "$CONFIG_JSON_1" > user/qhg.json
