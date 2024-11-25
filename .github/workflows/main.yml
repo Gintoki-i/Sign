@@ -34,13 +34,21 @@ jobs:
           echo "Secrets 内容如下："
           echo "${{secrets[matrix.secret_file]}}"
 
+      # 检查 Secret 是否为空
+      - name: 检查 Secret 是否为空
+        run: |
+          SECRET="${{secrets[matrix.secret_file]}}"
+          if [ -z "$SECRET" ]; then
+            echo "Secret for ${{ matrix.secret_file }} 为空！"
+            exit 1
+          fi
+          echo "Secret for ${{ matrix.secret_file }} 非空，继续执行。"
 
       # 使用 sed 清理并写入 Secrets 到 JSON 文件
-      - name: 写入 Secrets 到 JSON 文件
+      - name: 使用 sed 清理并写入 Secrets 到 JSON 文件
         run: |
           mkdir -p user
           SECRET="${{ secrets[matrix.secret_file] }}"
-          # 使用 sed 去除多余的换行符或空格（如有）
           CLEANED_SECRET=$(echo "$SECRET" | sed 's/[[:space:]]//g')
           echo "写入清理后的 Secret 到 user/config_${{ matrix.secret_file }}.json"
           echo "$CLEANED_SECRET" > "user/config_${{ matrix.secret_file }}.json"
