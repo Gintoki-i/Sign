@@ -12,9 +12,7 @@ jobs:
 
     strategy:
       matrix:
-        # secret_file: [CONFIG_JSON_1, CONFIG_JSON_2, CONFIG_JSON_3]  # 定义多个 secret 名称
-        secret_file: [QHG_JSON, ZXS_JSON] 
-
+        secret_file: [QHG_JSON, ZXS_JSON]  # 定义多个 secret 名称
 
     steps:
       # 检出代码
@@ -31,22 +29,11 @@ jobs:
       - name: 安装依赖
         run: pip install -r requirements.txt
 
-      # 设置 secret 环境变量
-      - name: 设置 secret 环境变量
-        run: |
-          echo "SECRET_CONTENT=${{ secrets[matrix.secret_file] }}" >> $GITHUB_ENV
-
-      # 输出 Secrets 内容进行调试
-      - name: 输出 Secrets 内容进行调试
-        run: |
-          echo "Secrets 内容如下："
-          echo "$SECRET_CONTENT"  # 这里通过环境变量访问
-
       # 写入 Secrets 到单独的 JSON 文件
       - name: 写入 Secrets 到单独的 JSON 文件
         run: |
           mkdir -p user
-          echo "$SECRET_CONTENT" > "user/config_${{ matrix.secret_file }}.json"
+          echo "${{ secrets[matrix.secret_file] }}" > "user/config_${{ matrix.secret_file }}.json"
           echo "写入完成：config_${{ matrix.secret_file }}.json"
 
       # 验证文件是否正确写入
