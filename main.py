@@ -440,7 +440,7 @@ def run(config: ConfigManager) -> None:
             "message": error_message,
             "task_type": "API客户端初始化"
         })
-        pusher.push(results)
+        # pusher.push(results)
         logger.info("任务异常结束\n")
         return
 
@@ -462,7 +462,7 @@ def run(config: ConfigManager) -> None:
             "task_type": "任务执行"
         })
 
-    pusher.push(results)
+    # pusher.push(results)
     logger.info(f"执行结束：{config.get_value('userInfo.nikeName')}")
 
 
