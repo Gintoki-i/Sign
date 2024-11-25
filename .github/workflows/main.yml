@@ -23,24 +23,25 @@ jobs:
         run: pip install -r requirements.txt
 
       - name: Save JSON Secret to file
-        run: |
-          echo "$CONFIG_JSON" > user/config.json
         env:
           CONFIG_JSON: ${{ secrets.CONFIG_JSON }}
+        run: |
+          mkdir -p user
+          echo "$CONFIG_JSON" > user/config.json
 
       - name: Check if config.json exists and show contents
         run: |
-          if [ -f config.json ]; then
+          if [ -f user/config.json ]; then
             echo "config.json 文件存在，内容如下:"
-            cat config.json
+            cat user/config.json
           else
             echo "config.json 文件不存在"
           fi
 
-      - name: Debug CONFIG_JSON secret
+      - name: Debug CONFIG_JSON secret (Optional, remove in production)
         run: |
           echo "Debugging CONFIG_JSON secret: $CONFIG_JSON"
-
+        
       - name: Run Auto Check-In
         env:
           USERNAME: ${{ secrets.MOGUDING_USERNAME }}
