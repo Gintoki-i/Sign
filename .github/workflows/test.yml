@@ -1,0 +1,41 @@
+name: to Config.json
+
+on:
+  push:
+    branches:
+      - main
+  workflow_dispatch:
+
+jobs:
+  run:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: 3.9
+
+      - name: Install dependencies
+        run: pip install -r requirements.txt
+
+      - name: Create user directory and write config.json
+        env:
+          CONFIG_JSON: ${{ secrets.CONFIG_JSON }}
+        run: |
+          echo "Creating user directory..."
+          mkdir -p user
+          echo "Writing CONFIG_JSON to user/config.json..."
+          echo "$CONFIG_JSON" > user/config.json
+
+      - name: Check if config.json exists and verify its content
+        run: |
+          if [ -f user/config.json ]; then
+            echo "config.json created successfully. Content:"
+            cat user/config.json
+          else
+            echo "Failed to create config.json."
+          fi
