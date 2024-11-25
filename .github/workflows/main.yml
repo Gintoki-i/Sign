@@ -39,7 +39,6 @@ jobs:
       - name: 写入 Secrets 到单独的 JSON 文件
         run: |
           mkdir -p user
-          # 格式化 JSON 并写入文件
           echo "${{ secrets[matrix.secret_file] }}" | jq . > "user/config_${{ matrix.secret_file }}.json"
           echo "写入完成：config_${{ matrix.secret_file }}.json"
 
