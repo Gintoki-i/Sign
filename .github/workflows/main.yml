@@ -1,4 +1,4 @@
-name: 自动签到任务
+name: 测试写入功能
 
 on:
   workflow_dispatch:
@@ -14,41 +14,18 @@ jobs:
       - name: 检出代码
         uses: actions/checkout@v3
 
-      - name: 设置 Python 环境
-        uses: actions/setup-python@v4
-        with:
-          python-version: 3.9
-
-      - name: 安装依赖
-        run: pip install -r requirements.txt
-
-      - name: 保存 CONFIG_JSON 到文件
-        env:
-          CONFIG_JSON: ${{ secrets.CONFIG_JSON }}
+      - name: 创建 user 目录并写入 test.txt
         run: |
           mkdir -p user
-          echo "$CONFIG_JSON" > user/config.json
-          echo "config.json 写入完成，内容如下："
-          cat user/config.json || echo "config.json 写入失败"
+          echo "这是一个测试文件。" > user/test.txt
+          echo "test.txt 写入完成，内容如下："
+          cat user/test.txt || echo "test.txt 写入失败"
 
-      - name: 调试 CONFIG_JSON
-        env:
-          CONFIG_JSON: ${{ secrets.CONFIG_JSON }}
+      - name: 检查 test.txt 文件是否存在
         run: |
-          echo "调试 CONFIG_JSON："
-          echo "::set-output name=config_json::$CONFIG_JSON"
-
-      - name: 检查 config.json 文件
-        run: |
-          if [ -f user/config.json ]; then
-            echo "config.json 文件已创建，内容如下："
-            cat user/config.json
+          if [ -f user/test.txt ]; then
+            echo "test.txt 文件存在，内容如下："
+            cat user/test.txt
           else
-            echo "config.json 文件不存在"
+            echo "test.txt 文件不存在！"
           fi
-
-      - name: 执行签到脚本
-        env:
-          USERNAME: ${{ secrets.MOGUDING_USERNAME }}
-          PASSWORD: ${{ secrets.MOGUDING_PASSWORD }}
-        run: python main.py
