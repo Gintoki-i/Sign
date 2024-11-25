@@ -3,8 +3,8 @@ name: main
 on:
   workflow_dispatch:
   schedule:
-    - cron: "30 8 * * *"
-    - cron: "30 18 * * *"
+    - cron: "0 8 * * *"
+    - cron: "0 18 * * *"
 
 jobs:
   run:
@@ -12,9 +12,8 @@ jobs:
 
     strategy:
       matrix:
-        # secret_file: [CONFIG_JSON_1, CONFIG_JSON_2, CONFIG_JSON_3]  # 定义多个 secret 名称
-        secret_file: [ZXS_JSON, QHG_JSON]  # 定义多个 secret 名称
-
+      # secret_file: [CONFIG_JSON_1, CONFIG_JSON_2, CONFIG_JSON_3]  # 定义多个 secret 名称
+        secret_file: [QHG_JSON, ZXS_JSON]  # 定义多个 secret 名称
 
     steps:
       # 检出代码
@@ -37,8 +36,8 @@ jobs:
           echo "Secrets 内容如下："
           echo "${{ secrets[matrix.secret_file] }}"  # 根据矩阵变量读取对应的 secret
 
-      # 写入 Secrets 到 config.json
-      - name: 写入 Secrets 到 config.json
+      # 写入 Secrets 到单独的 JSON 文件
+      - name: 写入 Secrets 到单独的 JSON 文件
         run: |
           mkdir -p user
           echo "${{ secrets[matrix.secret_file] }}" > "user/config_${{ matrix.secret_file }}.json"
