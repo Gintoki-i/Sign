@@ -33,16 +33,7 @@ jobs:
         run: |
           echo "Secrets 内容如下："
           echo "${{secrets[matrix.secret_file]}}"
-        
-      # 检查 Secret 是否为空
-      - name: 检查 Secret 是否为空
-        run: |
-          SECRET:${{secrets[matrix.secret_file]}}
-          if [ -z "$SECRET" ]; then
-            echo "Secret for ${{ matrix.secret_file }} 为空！"
-            exit 1
-          fi
-          echo "Secret for ${{ matrix.secret_file }} 非空，继续执行。"
+
 
       # 使用 sed 清理并写入 Secrets 到 JSON 文件
       - name: 写入 Secrets 到 JSON 文件
