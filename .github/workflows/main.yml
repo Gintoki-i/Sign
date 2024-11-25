@@ -3,8 +3,8 @@ name: main
 on:
   workflow_dispatch:
   schedule:
-    - cron: "0 8 * * *"
-    - cron: "0 18 * * *"
+    - cron: "30 8 * * *"
+    - cron: "30 18 * * *"
 
 jobs:
   run:
