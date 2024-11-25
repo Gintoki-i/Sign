@@ -10,6 +10,12 @@ jobs:
   run:
     runs-on: ubuntu-latest
 
+    strategy:
+      matrix:
+        # secret_file: [CONFIG_JSON_1, CONFIG_JSON_2, CONFIG_JSON_3]  # 定义多个 secret 名称
+        secret_file: [ZXS_JSON, QHG_JSON]  # 定义多个 secret 名称
+
+
     steps:
       # 检出代码
       - name: 检出代码
@@ -29,22 +35,20 @@ jobs:
       - name: 输出 Secrets 内容进行调试
         run: |
           echo "Secrets 内容如下："
-          echo "$TEST_SECRET" 
+          echo "${{ secrets[matrix.secret_file] }}"  # 根据矩阵变量读取对应的 secret
 
       # 写入 Secrets 到 config.json
       - name: 写入 Secrets 到 config.json
-        env:
-          TEST_SECRET: ${{ secrets.CONFIG_JSON }}
         run: |
           mkdir -p user
-          echo "$TEST_SECRET" > user/config.json
-          echo "写入完成。"
+          echo "${{ secrets[matrix.secret_file] }}" > "user/config_${{ matrix.secret_file }}.json"
+          echo "写入完成：config_${{ matrix.secret_file }}.json"
 
       # 验证文件是否正确写入
       - name: 验证文件是否正确写入
         run: |
-          if [ -s user/config.json ]; then
-            echo "Secrets 文件已成功写入，大小为：$(stat -c%s user/config.json) 字节"
+          if [ -s "user/config_${{ matrix.secret_file }}.json" ]; then
+            echo "Secrets 文件已成功写入，大小为：$(stat -c%s user/config_${{ matrix.secret_file }}.json) 字节"
           else
             echo "Secrets 文件为空或写入失败！"
             exit 1
@@ -53,7 +57,7 @@ jobs:
       # 验证 config.json 内容
       - name: 验证 config.json 内容
         run: |
-          echo "字符总数为：$(wc -c < user/config.json)"
+          echo "字符总数为：$(wc -c < user/config_${{ matrix.secret_file }}.json)"
 
       # 执行签到脚本
       - name: 执行签到脚本
