@@ -11,7 +11,7 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        secret_file: [CONFIG_JSON_1, CONFIG_JSON_2] # 替换为您的 Secrets 名称
+        secret_file: [QHG_JSON, ZXS_JSON] # 替换为您的 Secrets 名称
 
     steps:
       # 检出代码
