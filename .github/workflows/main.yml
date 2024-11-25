@@ -16,7 +16,7 @@ jobs:
 
       - name: 创建 user 目录并写入 Secrets 测试
         env:
-          TEST_SECRET: ${{ secrets.CONFIG_JSON }}
+          TEST_SECRET: ${{ secrets.ZXS_JSON }}
         run: |
           mkdir -p user
           echo "正在写入 Secrets 到 user/test_secrets.txt..."
