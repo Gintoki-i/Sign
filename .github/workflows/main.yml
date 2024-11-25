@@ -29,17 +29,17 @@ jobs:
       - name: 输出 Secrets 内容进行调试
         run: |
           echo "Secrets 内容如下："
-          echo "$TEST_SECRET"
-          echo "$TEST_SECRET1"
+          echo "$ZXS"
+          echo "$QHG"
       # 写入多个 Secrets 到不同的 JSON 文件
       - name: 写入 Secrets 到 config.json
         env:
-          TEST_SECRET: ${{ secrets.ZXS_JSON }}
-          TEST_SECRET1: ${{ secrets.QHG_JSON }}
+          ZXS: ${{ secrets.ZXS_JSON }}
+          QHG: ${{ secrets.QHG_JSON }}
         run: |
           mkdir -p user
-          echo "$TEST_SECRET" > user/config.json
-          echo "$TEST_SECRET1" > user/config1.json
+          echo "$ZXS" > user/config.json
+          echo "$QHG" > user/config1.json
           echo "写入完成。"
       # 验证 JSON 文件是否正确写入
       - name: 验证 JSON 文件是否正确写入
