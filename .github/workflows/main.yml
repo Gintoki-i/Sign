@@ -3,12 +3,15 @@ name: main
 on:
   workflow_dispatch:
   schedule:
-    - cron: "0 8 * * *"
-    - cron: "0 18 * * *"
+    - cron: "30 8 * * *"
+    - cron: "30 18 * * *"
 
 jobs:
   run:
     runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        secret_file: [ZXS_JSON, QHG_JSON]  # 修改为多个 Secrets 名称
 
     steps:
       # 检出代码
@@ -20,7 +23,7 @@ jobs:
         uses: actions/setup-python@v4
         with:
           python-version: 3.9
-          
+
       # 安装依赖
       - name: 安装依赖
         run: pip install -r requirements.txt
@@ -29,31 +32,50 @@ jobs:
       - name: 输出 Secrets 内容进行调试
         run: |
           echo "Secrets 内容如下："
-          echo "$TEST_SECRET" 
+          echo "${{secrets[matrix.secret_file]}}"
+        
+      # 检查 Secret 是否为空
+      - name: 检查 Secret 是否为空
+        run: |
+          SECRET="${{secrets[matrix.secret_file]}}"
+          if [ -z "$SECRET" ]; then
+            echo "Secret for ${{ matrix.secret_file }} 为空！"
+            exit 1
+          fi
+          echo "Secret for ${{ matrix.secret_file }} 非空，继续执行。"
 
-      # 写入 Secrets 到 config.json
-      - name: 写入 Secrets 到 config.json
-        env:
-          TEST_SECRET: ${{ secrets.CONFIG_JSON }}
+      # 使用 sed 清理并写入 Secrets 到 JSON 文件
+      - name: 写入 Secrets 到 JSON 文件
         run: |
           mkdir -p user
-          echo "$TEST_SECRET" > user/config.json
-          echo "写入完成。"
+          SECRET="${{ secrets[matrix.secret_file] }}"
+          # 使用 sed 去除多余的换行符或空格（如有）
+          CLEANED_SECRET=$(echo "$SECRET" | sed 's/[[:space:]]//g')
+          echo "写入清理后的 Secret 到 user/config_${{ matrix.secret_file }}.json"
+          echo "$CLEANED_SECRET" > "user/config_${{ matrix.secret_file }}.json"
+          echo "写入完成：user/config_${{ matrix.secret_file }}.json"
+
+      # 打印 JSON 文件内容
+      - name: 打印 JSON 文件内容
+        run: |
+          echo "查看 config_${{ matrix.secret_file }}.json 文件内容："
+          cat "user/config_${{ matrix.secret_file }}.json" || echo "文件不存在或内容为空！"
 
       # 验证文件是否正确写入
       - name: 验证文件是否正确写入
         run: |
-          if [ -s user/config.json ]; then
-            echo "Secrets 文件已成功写入，大小为：$(stat -c%s user/config.json) 字节"
+          if [ -s "user/config_${{ matrix.secret_file }}.json" ]; then
+            echo "Secrets 文件已成功写入，大小为：$(stat -c%s user/config_${{ matrix.secret_file }}.json) 字节"
           else
             echo "Secrets 文件为空或写入失败！"
             exit 1
           fi
 
-      # 验证 config.json 内容
-      - name: 验证 config.json 内容
+      # 查看 config.json 文件内容
+      - name: 查看 config.json 文件内容
         run: |
-          echo "字符总数为：$(wc -c < user/config.json)"
+          echo "查看 config_${{ matrix.secret_file }}.json 文件内容："
+          cat -A "user/config_${{ matrix.secret_file }}.json" || echo "文件不存在或内容为空！"
 
       # 执行签到脚本
       - name: 执行签到脚本
