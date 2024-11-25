@@ -12,8 +12,11 @@ jobs:
 
     strategy:
       matrix:
-        secret_file: [QHG_JSON, ZXS_JSON]  # 定义多个 secret 名称
-
+        secret_file:
+          - QHG_JSON
+          - ZXS_JSON
+          # - QYH_JSON
+          
     steps:
       # 检出代码
       - name: 检出代码
@@ -35,11 +38,12 @@ jobs:
           echo "Secrets 内容如下："
           echo "${{ secrets[matrix.secret_file] }}"
 
-      # 写入 Secrets 到单独的 JSON 文件
-      - name: 写入 Secrets 到单独的 JSON 文件
+      # 写入 Secrets 到 config.json
+      - name: 写入 Secrets 到 config.json
         run: |
           mkdir -p user
-          echo "${{ secrets[matrix.secret_file] }}" | jq . > "user/config_${{ matrix.secret_file }}.json"
+          SECRET="${{ secrets[matrix.secret_file] }}"
+          echo "$SECRET" | jq . > "user/config_${{ matrix.secret_file }}.json"
           echo "写入完成：config_${{ matrix.secret_file }}.json"
 
       # 验证文件是否正确写入
