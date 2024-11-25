@@ -1,5 +1,4 @@
-name: 测试写入 Secrets 到文件并验证 JSON 格式
-
+name: test
 on:
   workflow_dispatch:
   schedule:
@@ -22,12 +21,19 @@ jobs:
       - name: 安装依赖
         run: pip install -r requirements.txt
 
+      - name: 输出 Secrets 内容进行调试
+        run: |
+          echo "Secrets 内容如下："
+          echo "$TEST_SECRET" || echo "Secrets 内容为空！"
+        env:
+          TEST_SECRET: ${{ secrets.CONFIG_JSON }}
+
       - name: 写入 Secrets 到 config.json
         env:
           TEST_SECRET: ${{ secrets.CONFIG_JSON }}
         run: |
           mkdir -p user
-          printf "%s" "$TEST_SECRET" > user/config.json
+          echo "$TEST_SECRET" > user/config.json
           echo "写入完成。"
 
       - name: 验证文件是否正确写入
@@ -39,13 +45,11 @@ jobs:
             exit 1
           fi
 
-
       - name: 验证 config.json 内容
         run: |
           echo "config.json 文件内容如下："
           cat -A user/config.json || echo "文件不存在或内容为空！"
           echo "字符总数为：$(wc -c < user/config.json)"
-
 
       - name: 安装 jq 工具
         run: |
