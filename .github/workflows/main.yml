@@ -1,10 +1,10 @@
-name: test
+name: Write Secrets to Config.json
 
 on:
-  schedule:
-    - cron: "0 8 * * *"
-    - cron: "0 18 * * *"
-  workflow_dispatch:  # 手动触发支持
+  push:
+    branches:
+      - main
+  workflow_dispatch:
 
 jobs:
   run:
@@ -22,28 +22,20 @@ jobs:
       - name: Install dependencies
         run: pip install -r requirements.txt
 
-      - name: Save JSON Secret to file
+      - name: Create user directory and write config.json
         env:
           CONFIG_JSON: ${{ secrets.CONFIG_JSON }}
         run: |
+          echo "Creating user directory..."
           mkdir -p user
+          echo "Writing CONFIG_JSON to user/config.json..."
           echo "$CONFIG_JSON" > user/config.json
 
-      - name: Check if config.json exists and show contents
+      - name: Check if config.json exists and verify its content
         run: |
           if [ -f user/config.json ]; then
-            echo "config.json 文件存在，内容如下:"
+            echo "config.json created successfully. Content:"
             cat user/config.json
           else
-            echo "config.json 文件不存在"
+            echo "Failed to create config.json."
           fi
-
-      - name: Debug CONFIG_JSON secret (Optional, remove in production)
-        run: |
-          echo "Debugging CONFIG_JSON secret: $CONFIG_JSON"
-        
-      - name: Run Auto Check-In
-        env:
-          USERNAME: ${{ secrets.MOGUDING_USERNAME }}
-          PASSWORD: ${{ secrets.MOGUDING_PASSWORD }}
-        run: python main.py
