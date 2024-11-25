@@ -1,4 +1,4 @@
-name: 测试写入功能
+name: 测试写入 Secrets 到文件
 
 on:
   workflow_dispatch:
@@ -14,18 +14,21 @@ jobs:
       - name: 检出代码
         uses: actions/checkout@v3
 
-      - name: 创建 user 目录并写入 test.txt
+      - name: 创建 user 目录并写入 Secrets 测试
+        env:
+          TEST_SECRET: ${{ secrets.CONFIG_JSON }}
         run: |
           mkdir -p user
-          echo "这是一个测试文件。" > user/test.txt
-          echo "test.txt 写入完成，内容如下："
-          cat user/test.txt || echo "test.txt 写入失败"
+          echo "正在写入 Secrets 到 user/test_secrets.txt..."
+          echo "$TEST_SECRET" > user/test_secrets.txt
+          echo "写入完成，文件内容如下："
+          cat user/test_secrets.txt || echo "写入失败：文件内容为空或不存在！"
 
-      - name: 检查 test.txt 文件是否存在
+      - name: 验证文件是否存在及内容
         run: |
-          if [ -f user/test.txt ]; then
-            echo "test.txt 文件存在，内容如下："
-            cat user/test.txt
+          if [ -f user/test_secrets.txt ]; then
+            echo "user/test_secrets.txt 文件已创建，内容如下："
+            cat user/test_secrets.txt
           else
-            echo "test.txt 文件不存在！"
+            echo "user/test_secrets.txt 文件不存在！"
           fi
