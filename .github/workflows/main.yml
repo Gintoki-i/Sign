@@ -9,6 +9,14 @@ on:
 jobs:
   run:
     runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        secret_name: 
+          - ZXS_JSON
+          - QHG_JSON
+        file_name:
+          - zxs.json
+          - qhg.json
 
     steps:
       # 检出代码
@@ -25,42 +33,29 @@ jobs:
       - name: 安装依赖
         run: pip install -r requirements.txt
 
-      # 输出 Secrets 内容进行调试
-      - name: 输出 Secrets 内容进行调试
-        run: |
-          echo "Secrets 内容如下："
-          echo "$TEST_SECRET"
-          echo "$TEST_SECRET1"
-
-      # 写入多个 Secrets 到不同的 JSON 文件
-      - name: 写入 Secrets 到 config.json
+      # 写入 Secrets 到 JSON 文件
+      - name: 写入 Secrets 到 JSON 文件
         env:
-          TEST_SECRET: ${{ secrets.ZXS_JSON }}
-          TEST_SECRET1: ${{ secrets.QHG_JSON }}
+          SECRET_VALUE: ${{ secrets[matrix.secret_name] }}
         run: |
           mkdir -p user
-          echo "$TEST_SECRET" > user/config.json
-          echo "$TEST_SECRET1" > user/config1.json
-          echo "写入完成。"
+          echo "$SECRET_VALUE" > user/${{ matrix.file_name }}
+          echo "写入 ${{ matrix.file_name }} 完成。"
 
       # 验证 JSON 文件是否正确写入
       - name: 验证 JSON 文件是否正确写入
         run: |
-          for file in user/config*.json; do
-            if [ -s "$file" ]; then
-              echo "文件 $file 已成功写入，大小为：$(stat -c%s "$file") 字节"
-            else
-              echo "文件 $file 写入失败或为空！"
-              exit 1
-            fi
-          done
+          if [ -s user/${{ matrix.file_name }} ]; then
+            echo "文件 user/${{ matrix.file_name }} 已成功写入，大小为：$(stat -c%s user/${{ matrix.file_name }}) 字节"
+          else
+            echo "文件 user/${{ matrix.file_name }} 写入失败或为空！"
+            exit 1
+          fi
 
       # 验证 JSON 文件内容
       - name: 验证 JSON 文件内容
         run: |
-          for file in user/config*.json; do
-            echo "文件 $file 的字符总数为：$(wc -c < "$file")"
-          done
+          echo "文件 user/${{ matrix.file_name }} 的字符总数为：$(wc -c < user/${{ matrix.file_name }})"
 
       # 执行签到脚本
       - name: 执行签到脚本
