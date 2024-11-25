@@ -1,4 +1,4 @@
-name: 测试写入 Secrets 到文件并验证 JSON 格式
+name: main
 
 on:
   workflow_dispatch:
