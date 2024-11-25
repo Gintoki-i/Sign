@@ -9,6 +9,8 @@ on:
 jobs:
   run:
     runs-on: ubuntu-latest
+    env:
+      TZ: Asia/Shanghai
 
     steps:
       # 检出代码
@@ -25,39 +27,38 @@ jobs:
       - name: 安装依赖
         run: pip install -r requirements.txt
 
-      # 输出 Secrets 内容进行调试
-      - name: 输出 Secrets 内容进行调试
-        run: |
-          echo "Secrets 内容如下："
-          echo "$ZXS"
-          echo "$QHG"
-      # 写入多个 Secrets 到不同的 JSON 文件
+      # 写入 Secrets 到 JSON 文件
       - name: 写入 Secrets 到 config.json
         env:
           ZXS: ${{ secrets.ZXS_JSON }}
           QHG: ${{ secrets.QHG_JSON }}
         run: |
           mkdir -p user
+          if [ -z "$ZXS" ] || [ -z "$QHG" ]; then
+            echo "Secrets ZXS 或 QHG 为空，请检查配置！"
+            exit 1
+          fi
           echo "$ZXS" > user/config.json
           echo "$QHG" > user/config1.json
           echo "写入完成。"
+
       # 验证 JSON 文件是否正确写入
       - name: 验证 JSON 文件是否正确写入
         run: |
           for file in user/config*.json; do
             if [ -s "$file" ]; then
               echo "文件 $file 已成功写入，大小为：$(stat -c%s "$file") 字节"
+              python -m json.tool "$file" > /dev/null
+              if [ $? -ne 0 ]; then
+                echo "文件 $file 不是合法的 JSON 格式！"
+                exit 1
+              fi
             else
               echo "文件 $file 写入失败或为空！"
               exit 1
             fi
           done
-      # 验证 JSON 文件内容
-      - name: 验证 JSON 文件内容
-        run: |
-          for file in user/config*.json; do
-            echo "文件 $file 的字符总数为：$(wc -c < "$file")"
-          done
+
       # 执行签到脚本
       - name: 执行签到脚本
         run: python main.py
