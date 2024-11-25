@@ -13,9 +13,9 @@ jobs:
       matrix:
         include:
           - secret_name: ZXS_JSON
-            file_name: zxs.json
+            file_name: config.json
           - secret_name: QHG_JSON
-            file_name: qhg.json
+            file_name: config1.json
 
     steps:
       # 检出代码
