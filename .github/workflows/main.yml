@@ -50,5 +50,15 @@ jobs:
           else
             echo "Secrets 文件为空或未正确写入！"
           fi
+
+      - name: 检查 config.json 文件
+        run: |
+          if [ -f user/config.json ]; then
+            echo "config.json 文件已创建，内容如下："
+            cat user/config.json
+          else
+            echo "config.json 文件不存在"
+          fi
+      
       - name: 执行签到脚本
         run: python main.py
