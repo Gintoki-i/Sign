@@ -1,47 +1,53 @@
-name: main
+name: 自动签到任务
 
 on:
+  workflow_dispatch:
   schedule:
     - cron: "0 8 * * *"
     - cron: "0 18 * * *"
-  workflow_dispatch:  # 手动触发支持
 
 jobs:
   run:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout code
+      - name: 检出代码
         uses: actions/checkout@v3
 
-      - name: Set up Python
+      - name: 设置 Python 环境
         uses: actions/setup-python@v4
         with:
           python-version: 3.9
 
-      - name: Install dependencies
+      - name: 安装依赖
         run: pip install -r requirements.txt
 
-      - name: Save JSON Secret to file
-        run: |
-          echo "$CONFIG_JSON" > user/config.json
+      - name: 保存 CONFIG_JSON 到文件
         env:
           CONFIG_JSON: ${{ secrets.CONFIG_JSON }}
-
-      - name: Check if config.json exists and show contents
         run: |
-          if [ -f config.json ]; then
-            echo "config.json 文件存在，内容如下:"
-            cat config.json
+          mkdir -p user
+          echo "$CONFIG_JSON" > user/config.json
+          echo "config.json 写入完成，内容如下："
+          cat user/config.json || echo "config.json 写入失败"
+
+      - name: 调试 CONFIG_JSON
+        env:
+          CONFIG_JSON: ${{ secrets.CONFIG_JSON }}
+        run: |
+          echo "调试 CONFIG_JSON："
+          echo "::set-output name=config_json::$CONFIG_JSON"
+
+      - name: 检查 config.json 文件
+        run: |
+          if [ -f user/config.json ]; then
+            echo "config.json 文件已创建，内容如下："
+            cat user/config.json
           else
             echo "config.json 文件不存在"
           fi
 
-      - name: Debug CONFIG_JSON secret
-        run: |
-          echo "Debugging CONFIG_JSON secret: $CONFIG_JSON"
-
-      - name: Run Auto Check-In
+      - name: 执行签到脚本
         env:
           USERNAME: ${{ secrets.MOGUDING_USERNAME }}
           PASSWORD: ${{ secrets.MOGUDING_PASSWORD }}
