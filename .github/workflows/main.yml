@@ -24,9 +24,8 @@ jobs:
       - name: 输出 Secrets 内容进行调试
         run: |
           echo "Secrets 内容如下："
-          echo "$TEST_SECRET" || echo "Secrets 内容为空！"
-        env:
-          TEST_SECRET: ${{ secrets.CONFIG_JSON }}
+          echo "${{ secrets.CONFIG_JSON }}" || echo "Secrets 内容为空！"
+
 
       - name: 写入 Secrets 到 config.json
         env:
