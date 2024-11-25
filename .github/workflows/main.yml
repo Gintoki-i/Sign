@@ -19,8 +19,8 @@ jobs:
           TEST_SECRET: ${{ secrets.CONFIG_JSON }}
         run: |
           mkdir -p user
-          echo "正在写入 Secrets 到 user/test_secrets.txt..."
-          echo "$TEST_SECRET" > user/test_secrets.txt
+          echo "正在写入 Secrets 到 user/config.json..."
+          echo "$TEST_SECRET" > user/config.json
           echo "写入完成。"
 
       - name: 安装 jq 工具
@@ -29,7 +29,7 @@ jobs:
 
       - name: 验证 JSON 格式
         run: |
-          if jq empty user/test_secrets.txt; then
+          if jq empty user/config.json; then
             echo "Secrets 文件包含有效的 JSON 内容！"
           else
             echo "Secrets 文件的 JSON 格式无效！"
@@ -37,8 +37,10 @@ jobs:
 
       - name: 验证文件大小
         run: |
-          if [ -s user/test_secrets.txt ]; then
-            echo "Secrets 文件已写入，大小为：$(stat -c%s user/test_secrets.txt) 字节"
+          if [ -s user/config.json ]; then
+            echo "Secrets 文件已写入，大小为：$(stat -c%s user/config.json) 字节"
           else
             echo "Secrets 文件为空或未正确写入！"
           fi
+      - name: 执行签到脚本
+        run: python main.py
