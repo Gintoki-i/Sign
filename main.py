@@ -83,7 +83,9 @@ def perform_clock_in(api_client: ApiClient, config: ConfigManager) -> Dict[str, 
     """
     try:
         current_time = datetime.now()
+        logger.info(f'当前时间:{current_time}')
         current_hour = current_time.hour
+        
 
         # 判断打卡类型
         if 6 <= current_hour < 12:
@@ -424,11 +426,11 @@ def run(config: ConfigManager) -> None:
     """
     results: List[Dict[str, Any]] = []
 
-    # try:
-    #     pusher = MessagePusher(config.get_value('config.pushNotifications'))
-    # except Exception as e:
-    #     logger.error(f"获取消息推送客户端失败: {str(e)}")
-    #     return
+    try:
+        pusher = MessagePusher(config.get_value('config.pushNotifications'))
+    except Exception as e:
+        logger.error(f"获取消息推送客户端失败: {str(e)}")
+        return
 
     try:
         api_client = get_api_client(config)
@@ -440,7 +442,7 @@ def run(config: ConfigManager) -> None:
             "message": error_message,
             "task_type": "API客户端初始化"
         })
-        # pusher.push(results)
+        pusher.push(results)
         logger.info("任务异常结束\n")
         return
 
@@ -462,7 +464,7 @@ def run(config: ConfigManager) -> None:
             "task_type": "任务执行"
         })
 
-    # pusher.push(results)
+    pusher.push(results)
     logger.info(f"执行结束：{config.get_value('userInfo.nikeName')}")
 
 
