@@ -86,7 +86,7 @@ def perform_clock_in(api_client: ApiClient, config: ConfigManager) -> Dict[str, 
         current_hour = current_time.hour
 
         # 判断打卡类型
-        if 8 <= current_hour < 12:
+        if 6 <= current_hour < 12:
             checkin_type = 'START'
             display_type = '上班'
         elif 13 <= current_hour < 20:
