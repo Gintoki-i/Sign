@@ -3,16 +3,12 @@ name: main
 on:
   workflow_dispatch:
   schedule:
-    - cron: "30 8 * * *"
-    - cron: "30 18 * * *"
+    - cron: "0 8 * * *"
+    - cron: "0 18 * * *"
 
 jobs:
   run:
     runs-on: ubuntu-latest
-
-    strategy:
-      matrix:
-        secret_file: [QHG_JSON, ZXS_JSON]  # 定义多个 secret 名称
 
     steps:
       # 检出代码
@@ -29,18 +25,26 @@ jobs:
       - name: 安装依赖
         run: pip install -r requirements.txt
 
-      # 写入 Secrets 到单独的 JSON 文件
-      - name: 写入 Secrets 到单独的 JSON 文件
+      # 输出 Secrets 内容进行调试
+      - name: 输出 Secrets 内容进行调试
+        run: |
+          echo "Secrets 内容如下："
+          echo "$TEST_SECRET" 
+
+      # 写入 Secrets 到 config.json
+      - name: 写入 Secrets 到 config.json
+        env:
+          TEST_SECRET: ${{ secrets.QHG_JSON }}
         run: |
           mkdir -p user
-          echo "${{ secrets[matrix.secret_file] }}" > "user/config_${{ matrix.secret_file }}.json"
-          echo "写入完成：config_${{ matrix.secret_file }}.json"
+          echo "$TEST_SECRET" > user/config.json
+          echo "写入完成。"
 
       # 验证文件是否正确写入
       - name: 验证文件是否正确写入
         run: |
-          if [ -s "user/config_${{ matrix.secret_file }}.json" ]; then
-            echo "Secrets 文件已成功写入，大小为：$(stat -c%s user/config_${{ matrix.secret_file }}.json) 字节"
+          if [ -s user/config.json ]; then
+            echo "Secrets 文件已成功写入，大小为：$(stat -c%s user/config.json) 字节"
           else
             echo "Secrets 文件为空或写入失败！"
             exit 1
@@ -49,7 +53,7 @@ jobs:
       # 验证 config.json 内容
       - name: 验证 config.json 内容
         run: |
-          echo "字符总数为：$(wc -c < user/config_${{ matrix.secret_file }}.json)"
+          echo "字符总数为：$(wc -c < user/config.json)"
 
       # 执行签到脚本
       - name: 执行签到脚本
