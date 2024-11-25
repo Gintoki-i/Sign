@@ -8,16 +8,6 @@ on:
 
 jobs:
   run:
-    runs-on: ubuntu-latestname: main
-
-on:
-  workflow_dispatch:
-  schedule:
-    - cron: "30 8 * * *"
-    - cron: "30 18 * * *"
-
-jobs:
-  run:
     runs-on: ubuntu-latest
 
     steps:
@@ -39,8 +29,8 @@ jobs:
       - name: 输出 Secrets 内容进行调试
         run: |
           echo "Secrets 内容如下："
-          echo "$TEST_SECRET"   
-          echo "$TEST_SECRET1"  
+          echo "$TEST_SECRET"
+          echo "$TEST_SECRET1"
       # 写入多个 Secrets 到不同的 JSON 文件
       - name: 写入 Secrets 到 config.json
         env:
@@ -50,58 +40,6 @@ jobs:
           mkdir -p user
           echo "$TEST_SECRET" > user/config.json
           echo "$TEST_SECRET1" > user/config1.json
-          echo "写入完成。"
-      # 验证 JSON 文件是否正确写入
-      - name: 验证 JSON 文件是否正确写入
-        run: |
-          for file in user/config*.json; do
-            if [ -s "$file" ]; then
-              echo "文件 $file 已成功写入，大小为：$(stat -c%s "$file") 字节"
-            else
-              echo "文件 $file 写入失败或为空！"
-              exit 1
-            fi
-          done
-      # 验证 JSON 文件内容
-      - name: 验证 JSON 文件内容
-        run: |
-          for file in user/config*.json; do
-            echo "文件 $file 的字符总数为：$(wc -c < "$file")"
-          done
-      # 执行签到脚本
-      - name: 执行签到脚本
-        run: python main.py
-
-    steps:
-      # 检出代码
-      - name: 检出代码
-        uses: actions/checkout@v3
-
-      # 设置 Python 环境
-      - name: 设置 Python 环境
-        uses: actions/setup-python@v4
-        with:
-          python-version: 3.9
-
-      # 安装依赖
-      - name: 安装依赖
-        run: pip install -r requirements.txt
-
-      # 输出 Secrets 内容进行调试
-      - name: 输出 Secrets 内容进行调试
-        run: |
-          echo "Secrets 内容如下："
-          echo "$ZXS"
-          echo "$QHG"
-      # 写入多个 Secrets 到不同的 JSON 文件
-      - name: 写入 Secrets 到 config.json
-        env:
-          ZXS: ${{ secrets.ZXS_JSON }}
-          QHG: ${{ secrets.QHG_JSON }}
-        run: |
-          mkdir -p user
-          echo "$ZXS" > user/ZXS.json
-          echo "$QHG" > user/QHG.json
           echo "写入完成。"
       # 验证 JSON 文件是否正确写入
       - name: 验证 JSON 文件是否正确写入
