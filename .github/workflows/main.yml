@@ -37,6 +37,8 @@ jobs:
       # 写入 Secrets 到 JSON 文件
       - name: 写入 Secrets 到 JSON 文件
         run: |
+          echo "执行 mkdir 命令之前："
+          echo "当前目录：$(pwd)"
           mkdir -p user
           SECRET="${{ secrets[matrix.secret_file] }}"
           echo "$SECRET" > "user/config_${{ matrix.secret_file }}.json"
