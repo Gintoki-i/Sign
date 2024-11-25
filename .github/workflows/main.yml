@@ -37,7 +37,7 @@ jobs:
       # 检查 Secret 是否为空
       - name: 检查 Secret 是否为空
         run: |
-          SECRET="${{secrets[matrix.secret_file]}}"
+          SECRET:${{secrets[matrix.secret_file]}}
           if [ -z "$SECRET" ]; then
             echo "Secret for ${{ matrix.secret_file }} 为空！"
             exit 1
