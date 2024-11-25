@@ -11,7 +11,7 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        secret_file: [QHG_JSON, ZXS_JSON] # 替换为您的 Secrets 名称
+        secret_file: [QHG_JSON, ZXS_JSON]  # 修改为你的多个 Secrets 名称
 
     steps:
       # 检出代码
@@ -23,38 +23,46 @@ jobs:
         uses: actions/setup-python@v4
         with:
           python-version: 3.9
-          
+
       # 安装依赖
       - name: 安装依赖
         run: pip install -r requirements.txt
 
-      # 调试 matrix.secret_file
-      - name: 调试 matrix.secret_file
+      # 输出 Secrets 内容进行调试
+      - name: 输出 Secrets 内容进行调试
         run: |
-          echo "当前处理的 Secret 名称为：${{ matrix.secret_file }}"
+          echo "Secrets 内容如下："
+          echo "${{ secrets[matrix.secret_file] }}"
 
-      # 写入 Secrets 到多个 JSON 文件
+      # 写入 Secrets 到 config.json
       - name: 写入 Secrets 到 JSON 文件
         run: |
           mkdir -p user
           SECRET="${{ secrets[matrix.secret_file] }}"
+          # 确保 SECRET 非空
           if [ -z "$SECRET" ]; then
             echo "Secret for ${{ matrix.secret_file }} 未定义或为空，跳过。"
             exit 1
           fi
+          # 使用 jq 格式化 JSON 并写入文件
           echo "$SECRET" | jq . > "user/config_${{ matrix.secret_file }}.json"
           echo "写入完成：user/config_${{ matrix.secret_file }}.json"
 
       # 验证文件是否正确写入
-      - name: 验证 JSON 文件
+      - name: 验证文件是否正确写入
         run: |
           if [ -s "user/config_${{ matrix.secret_file }}.json" ]; then
-            echo "文件 user/config_${{ matrix.secret_file }}.json 写入成功。"
-            cat "user/config_${{ matrix.secret_file }}.json"
+            echo "Secrets 文件已成功写入，大小为：$(stat -c%s user/config_${{ matrix.secret_file }}.json) 字节"
           else
-            echo "文件 user/config_${{ matrix.secret_file }}.json 写入失败！"
+            echo "Secrets 文件为空或写入失败！"
             exit 1
           fi
+
+      # 查看文件内容
+      - name: 查看 config.json 文件内容
+        run: |
+          echo "查看 config_${{ matrix.secret_file }}.json 文件内容："
+          cat -A "user/config_${{ matrix.secret_file }}.json" || echo "文件不存在或内容为空！"
 
       # 执行签到脚本
       - name: 执行签到脚本
