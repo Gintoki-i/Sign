@@ -29,7 +29,7 @@ jobs:
       - name: 输出 Secrets 内容进行调试
         run: |
           echo "Secrets 内容如下："
-          echo "$TEST_SECRET" | head -n 10  # 打印前10行，以调试 Secrets 是否完整
+          echo "$TEST_SECRET" 
 
       # 写入 Secrets 到 config.json
       - name: 写入 Secrets 到 config.json
@@ -53,29 +53,7 @@ jobs:
       # 验证 config.json 内容
       - name: 验证 config.json 内容
         run: |
-          echo "config.json 文件内容如下："
-          cat -A user/config.json || echo "文件不存在或内容为空！"
           echo "字符总数为：$(wc -c < user/config.json)"
-
-      # 安装 jq 工具
-      - name: 安装 jq 工具
-        run: |
-          sudo apt-get update && sudo apt-get install -y jq
-
-      # 验证 JSON 格式
-      - name: 验证 JSON 格式
-        run: |
-          if jq empty user/config.json; then
-            echo "Secrets 文件包含有效的 JSON 内容！"
-          else
-            echo "Secrets 文件的 JSON 格式无效！"
-          fi
-
-      # 查看文件内容
-      - name: 查看文件内容
-        run: |
-          echo "config.json 文件内容如下："
-          cat user/config.json || echo "文件不存在或内容为空！"
 
       # 执行签到脚本
       - name: 执行签到脚本
