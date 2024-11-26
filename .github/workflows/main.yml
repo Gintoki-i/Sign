@@ -8,9 +8,12 @@ on:
   # CST = UTC + 8
   # UTC = CST - 8
 
+
 jobs:
   run:
     runs-on: ubuntu-latest
+    env:
+      TZ: Asia/Shanghai
 
     steps:
       # 检出代码
