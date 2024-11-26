@@ -2,9 +2,9 @@ name: main
 
 on:
   workflow_dispatch:
-  schedule:
-  - cron: "30 0 * * *"  # UTC 
-  - cron: "23 13 * * *" # UTC 
+  # schedule:
+  # - cron: "30 0 * * *"  # UTC 
+  # - cron: "23 13 * * *" # UTC 
   # CST = UTC + 8
   # UTC = CST - 8
 
