@@ -496,7 +496,7 @@ def main(selected_files: list = None) -> None:
 
 if __name__ == '__main__':
     # 读取命令行参数
-    print('-----------------------------------------------------')
+    logger.info(f'---------------------------------------------')
     parser = argparse.ArgumentParser(description="运行工学云任务")
     time_ = datetime.now()
     logger.info(f'当前时间:{time_}')
@@ -505,4 +505,4 @@ if __name__ == '__main__':
 
     # 执行命令
     main(args.file)
-    print('-----------------------------------------------------')
+    logger.info(f'---------------------------------------------\n')
