@@ -35,14 +35,18 @@ jobs:
         env:
           ZXS: ${{ secrets.ZXS_JSON }}
           QHG: ${{ secrets.QHG_JSON }}
+          HYF: ${{ secrets.HYF_JSON }}
+          BLQ: ${{ secrets.BLQ_JSON }}
         run: |
           mkdir -p user
-          if [ -z "$ZXS" ] || [ -z "$QHG" ]; then
+          if [ -z "$ZXS" ] || [ -z "$QHG" ] || [ -z "$HYF" ] || [ -z "$BLQ" ]; then
             echo "Secrets ZXS 或 QHG 为空，请检查配置！"
             exit 1
           fi
-          echo "$ZXS" > user/config.json
+          echo "$HYF" > user/config.json
           echo "$QHG" > user/config1.json
+          echo "$ZXS" > user/config2.json
+          echo "$BLQ" > user/config3.json
           echo "写入完成。"
 
       # 验证 JSON 文件是否正确写入
