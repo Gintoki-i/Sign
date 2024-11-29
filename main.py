@@ -466,6 +466,7 @@ def run(config: ConfigManager) -> None:
 
     pusher.push(results)
     logger.info(f"执行结束：{config.get_value('userInfo.nikeName')}")
+    logger.info(f'-------------------------------------------------------------------\n')
 
 
 def main(selected_files: list = None) -> None:
@@ -474,8 +475,8 @@ def main(selected_files: list = None) -> None:
     :param selected_files: 选定的配置文件名（不带路径和后缀）
     :type selected_files: list
     """
-    logger.info("工学云任务开始")
-    logger.info(f'\n---------------------------------------------------')
+    logger.info("工学云任务开始\n")
+    logger.info(f'-------------------------------------------------------------------')
     logger.info(f'当前时间:{time_[:19]}')
     json_files = {f[:-5]: f for f in os.listdir(USER_DIR) if f.endswith('.json')}
     if not json_files:
@@ -492,7 +493,7 @@ def main(selected_files: list = None) -> None:
         for filename in json_files.values():
             run(ConfigManager(os.path.join(USER_DIR, filename)))
             
-    logger.info(f'---------------------------------------------------\n')
+    
 
     logger.info("工学云任务结束")
 
