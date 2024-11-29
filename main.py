@@ -85,7 +85,6 @@ def perform_clock_in(api_client: ApiClient, config: ConfigManager) -> Dict[str, 
         current_time = datetime.now()
         logger.info(f'当前时间:{current_time}')
         current_hour = current_time.hour
-        
 
         # 判断打卡类型
         if 1 <= current_hour <= 12:
@@ -443,7 +442,9 @@ def run(config: ConfigManager) -> None:
             "task_type": "API客户端初始化"
         })
         pusher.push(results)
-        logger.info("任务异常结束\n")
+        logger.info("任务异常结束")
+        logger.info(f'-------------------------------------------------------------------')
+        logger.info('')
         return
 
     logger.info(f"开始执行：{config.get_value('userInfo.nikeName')}")
@@ -466,7 +467,7 @@ def run(config: ConfigManager) -> None:
 
     pusher.push(results)
     logger.info(f"执行结束：{config.get_value('userInfo.nikeName')}")
-    logger.info(f'-------------------------------------------------------------------')
+    logger.info(f'-------------------------------------------------------------------\n')
     logger.info('')
 
 
@@ -478,7 +479,7 @@ def main(selected_files: list = None) -> None:
     """
     logger.info("工学云任务开始\n")
     logger.info(f'-------------------------------------------------------------------')
-    logger.info(f"当前时间:{time_[:19]}")
+    logger.info(f"当前时间:{formatted_now}")
     json_files = {f[:-5]: f for f in os.listdir(USER_DIR) if f.endswith('.json')}
     if not json_files:
         logger.info("打卡文件未配置")
@@ -493,17 +494,16 @@ def main(selected_files: list = None) -> None:
     else:
         for filename in json_files.values():
             run(ConfigManager(os.path.join(USER_DIR, filename)))
-            
-    
 
     logger.info("工学云任务结束")
 
 
 if __name__ == '__main__':
+    now = datetime.now()
+    formatted_now = now.strftime("%Y-%m-%d %H:%M:%S")
+
     # 读取命令行参数
-    
     parser = argparse.ArgumentParser(description="运行工学云任务")
-    time_ = str(datetime.now())
     parser.add_argument('--file', type=str, nargs='+', help='指定要执行的配置文件名（不带路径和后缀），可以一次性指定多个')
     args = parser.parse_args()
 
