@@ -466,7 +466,8 @@ def run(config: ConfigManager) -> None:
 
     pusher.push(results)
     logger.info(f"执行结束：{config.get_value('userInfo.nikeName')}")
-    logger.info(f'-------------------------------------------------------------------\n')
+    logger.info(f'-------------------------------------------------------------------')
+    logger.info('')
 
 
 def main(selected_files: list = None) -> None:
@@ -477,7 +478,7 @@ def main(selected_files: list = None) -> None:
     """
     logger.info("工学云任务开始\n")
     logger.info(f'-------------------------------------------------------------------')
-    logger.info(f'当前时间:{time_[:19]}')
+    logger.info(f"当前时间:{time_[:19]}")
     json_files = {f[:-5]: f for f in os.listdir(USER_DIR) if f.endswith('.json')}
     if not json_files:
         logger.info("打卡文件未配置")
@@ -502,7 +503,7 @@ if __name__ == '__main__':
     # 读取命令行参数
     
     parser = argparse.ArgumentParser(description="运行工学云任务")
-    time_ = f'{datetime.now()}'
+    time_ = str(datetime.now())
     parser.add_argument('--file', type=str, nargs='+', help='指定要执行的配置文件名（不带路径和后缀），可以一次性指定多个')
     args = parser.parse_args()
 
