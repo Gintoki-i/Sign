@@ -475,7 +475,8 @@ def main(selected_files: list = None) -> None:
     :type selected_files: list
     """
     logger.info("工学云任务开始")
-
+    logger.info(f'\n---------------------------------------------------')
+    logger.info(f'当前时间:{time_[:19]}')
     json_files = {f[:-5]: f for f in os.listdir(USER_DIR) if f.endswith('.json')}
     if not json_files:
         logger.info("打卡文件未配置")
@@ -490,19 +491,19 @@ def main(selected_files: list = None) -> None:
     else:
         for filename in json_files.values():
             run(ConfigManager(os.path.join(USER_DIR, filename)))
+            
+    logger.info(f'---------------------------------------------------\n')
 
     logger.info("工学云任务结束")
 
 
 if __name__ == '__main__':
     # 读取命令行参数
-    logger.info(f'---------------------------------------------')
+    
     parser = argparse.ArgumentParser(description="运行工学云任务")
-    time_ = datetime.now()
-    logger.info(f'当前时间:{time_}')
+    time_ = f'{datetime.now()}'
     parser.add_argument('--file', type=str, nargs='+', help='指定要执行的配置文件名（不带路径和后缀），可以一次性指定多个')
     args = parser.parse_args()
 
     # 执行命令
     main(args.file)
-    logger.info(f'---------------------------------------------\n')
