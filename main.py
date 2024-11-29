@@ -468,7 +468,7 @@ def run(config: ConfigManager) -> None:
     pusher.push(results)
     logger.info(f"执行结束：{config.get_value('userInfo.nikeName')}")
     logger.info(f'-------------------------------------------------------------------\n')
-    logger.info('')
+
 
 
 def main(selected_files: list = None) -> None:
@@ -479,7 +479,7 @@ def main(selected_files: list = None) -> None:
     """
     logger.info("工学云任务开始\n")
     logger.info(f'-------------------------------------------------------------------')
-    logger.info(f"当前时间:{formatted_now}")
+    logger.info(f"当前时间:{formatted_now[:19]}")
     json_files = {f[:-5]: f for f in os.listdir(USER_DIR) if f.endswith('.json')}
     if not json_files:
         logger.info("打卡文件未配置")
