@@ -89,7 +89,7 @@ class ApiClient:
                 return rsp
 
             if 'token失效' in rsp.get('msg', '未知错误') and retry_count < self.max_retries:
-                wait_time = 0.3 * (2 ** retry_count)
+                wait_time = 0.8 * (2 ** retry_count)
                 time.sleep(wait_time)
                 logger.warning('Token失效，正在重新登录...')
                 self.login()
@@ -102,7 +102,7 @@ class ApiClient:
             if re.search(r'[\u4e00-\u9fff]', str(e)) or retry_count >= self.max_retries:
                 raise ValueError(f'{msg}，{str(e)}')
 
-            wait_time = 0.3 * (2 ** retry_count)
+            wait_time = 0.8 * (2 ** retry_count)
             logger.warning(f"{msg}: 重试 {retry_count + 1}/{self.max_retries}，等待 {wait_time:.2f} 秒")
             time.sleep(wait_time)
 
@@ -120,7 +120,7 @@ class ApiClient:
         """
         attempts = 0
         while attempts < max_attempts:
-            time.sleep(random.uniform(0.5, 0.7))
+            time.sleep(random.uniform(0.5, 1.5))
             captcha_url = 'session/captcha/v1/get'
             request_data = {
                 "clientUid": str(uuid.uuid4()).replace('-', ''),
