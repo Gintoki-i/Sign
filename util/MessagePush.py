@@ -208,7 +208,7 @@ class MessagePusher:
         :return: Markdown 格式的消息
         :rtype: str
         """
-        message_parts = ["# 工学云任务执行报告\n\n"]
+        message_parts = ["# 工学云报告\n\n"]
 
         # 任务执行统计
         status_counts = Counter(result.get("status", "unknown") for result in results)
