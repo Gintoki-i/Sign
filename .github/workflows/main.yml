@@ -34,19 +34,18 @@ jobs:
       - name: 写入 Secrets 到 config.json
         env:
           ZXS: ${{ secrets.ZXS_JSON }}
-          QHG: ${{ secrets.QHG_JSON }}
+          # QHG: ${{ secrets.QHG_JSON }}
           HYF: ${{ secrets.HYF_JSON }}
           LM: ${{ secrets.LM_JSON }}
           BLQ: ${{ secrets.BLQ_JSON }}
         run: |
           mkdir -p user
-          if [ -z "$ZXS" ] || [ -z "$QHG" ] || [ -z "$HYF" ] || [ -z "$LM" ] || [ -z "$BLQ" ]; then
+          if [ -z "$ZXS" ] || [ -z "$HYF" ] || [ -z "$LM" ] || [ -z "$BLQ" ]; then
             echo "Secrets ZXS 或 QHG 为空，请检查配置！"
             exit 1
           fi
           echo "$HYF" > user/config.json
           echo "$LM" > user/config1.json
-          echo "$QHG" > user/config2.json
           echo "$ZXS" > user/config3.json
           echo "$BLQ" > user/config4.json
           echo "写入完成。"
