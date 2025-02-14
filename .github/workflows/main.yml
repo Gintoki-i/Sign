@@ -1,72 +1,72 @@
-name: main
+# name: main
 
-on:
-  workflow_dispatch:
-  # schedule:
-  # - cron: "30 0 * * *"  # UTC 
-  # - cron: "23 13 * * *" # UTC 
-  # CST = UTC + 8
-  # UTC = CST - 8
+# on:
+#   workflow_dispatch:
+#   # schedule:
+#   # - cron: "30 0 * * *"  # UTC 
+#   # - cron: "23 13 * * *" # UTC 
+#   # CST = UTC + 8
+#   # UTC = CST - 8
 
 
-jobs:
-  run:
-    runs-on: ubuntu-latest
-    env:
-      TZ: Asia/Shanghai
+# jobs:
+#   run:
+#     runs-on: ubuntu-latest
+#     env:
+#       TZ: Asia/Shanghai
 
-    steps:
-      # 检出代码
-      - name: 检出代码
-        uses: actions/checkout@v3
+#     steps:
+#       # 检出代码
+#       - name: 检出代码
+#         uses: actions/checkout@v3
 
-      # 设置 Python 环境
-      - name: 设置 Python 环境
-        uses: actions/setup-python@v4
-        with:
-          python-version: 3.9
+#       # 设置 Python 环境
+#       - name: 设置 Python 环境
+#         uses: actions/setup-python@v4
+#         with:
+#           python-version: 3.9
 
-      # 安装依赖
-      - name: 安装依赖
-        run: pip install -r requirements.txt
+#       # 安装依赖
+#       - name: 安装依赖
+#         run: pip install -r requirements.txt
 
-      # 写入 Secrets 到 JSON 文件
-      - name: 写入 Secrets 到 config.json
-        env:
-          ZXS: ${{ secrets.ZXS_JSON }}
-          # QHG: ${{ secrets.QHG_JSON }}
-          HYF: ${{ secrets.HYF_JSON }}
-          LM: ${{ secrets.LM_JSON }}
-          BLQ: ${{ secrets.BLQ_JSON }}
-        run: |
-          mkdir -p user
-          if [ -z "$ZXS" ] || [ -z "$HYF" ] || [ -z "$LM" ] || [ -z "$BLQ" ]; then
-            echo "Secrets ZXS 或 QHG 为空，请检查配置！"
-            exit 1
-          fi
-          echo "$HYF" > user/config.json
-          echo "$LM" > user/config1.json
-          echo "$ZXS" > user/config3.json
-          echo "$BLQ" > user/config4.json
-          echo "写入完成。"
+#       # 写入 Secrets 到 JSON 文件
+#       - name: 写入 Secrets 到 config.json
+#         env:
+#           ZXS: ${{ secrets.ZXS_JSON }}
+#           # QHG: ${{ secrets.QHG_JSON }}
+#           HYF: ${{ secrets.HYF_JSON }}
+#           LM: ${{ secrets.LM_JSON }}
+#           BLQ: ${{ secrets.BLQ_JSON }}
+#         run: |
+#           mkdir -p user
+#           if [ -z "$ZXS" ] || [ -z "$HYF" ] || [ -z "$LM" ] || [ -z "$BLQ" ]; then
+#             echo "Secrets ZXS 或 QHG 为空，请检查配置！"
+#             exit 1
+#           fi
+#           echo "$HYF" > user/config.json
+#           echo "$LM" > user/config1.json
+#           echo "$ZXS" > user/config3.json
+#           echo "$BLQ" > user/config4.json
+#           echo "写入完成。"
 
-      # 验证 JSON 文件是否正确写入
-      - name: 验证 JSON 文件是否正确写入
-        run: |
-          for file in user/config*.json; do
-            if [ -s "$file" ]; then
-              echo "文件 $file 已成功写入，大小为：$(stat -c%s "$file") 字节"
-              python -m json.tool "$file" > /dev/null
-              if [ $? -ne 0 ]; then
-                echo "文件 $file 不是合法的 JSON 格式！"
-                exit 1
-              fi
-            else
-              echo "文件 $file 写入失败或为空！"
-              exit 1
-            fi
-          done
+#       # 验证 JSON 文件是否正确写入
+#       - name: 验证 JSON 文件是否正确写入
+#         run: |
+#           for file in user/config*.json; do
+#             if [ -s "$file" ]; then
+#               echo "文件 $file 已成功写入，大小为：$(stat -c%s "$file") 字节"
+#               python -m json.tool "$file" > /dev/null
+#               if [ $? -ne 0 ]; then
+#                 echo "文件 $file 不是合法的 JSON 格式！"
+#                 exit 1
+#               fi
+#             else
+#               echo "文件 $file 写入失败或为空！"
+#               exit 1
+#             fi
+#           done
 
-      # 执行签到脚本
-      - name: 执行签到脚本
-        run: python main.py
+#       # 执行签到脚本
+#       - name: 执行签到脚本
+#         run: python main.py
